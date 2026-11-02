@@ -53,6 +53,8 @@ void loop() {
 ### Тесты
 Центр, мёртвая зона, ±100 по краям, направления, угол, диапазоны АЦП, ошибки калибровки проверены без железа: `extras/test`.
 
+Подробное руководство: [docs/WIKI.md](docs/WIKI.md).
+
 ---
 
 ## Қазақша
@@ -90,6 +92,8 @@ void loop() {
 
 ### Мысалдар
 `Basic`, `Directions`, `Servo_AVR`, `Diagnose`.
+
+Толық нұсқаулық: [docs/WIKI.md](docs/WIKI.md).
 
 ---
 
@@ -130,6 +134,8 @@ If "up" turns out negative on your module, call `joy.invertY()`: axis polarity d
 
 ### Examples
 `Basic`, `Directions`, `Servo_AVR`, `Diagnose`.
+
+Full guide: [docs/WIKI.md](docs/WIKI.md).
 
 ### License
 MIT, Alash Electronics.
