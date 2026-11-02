@@ -20,6 +20,7 @@ void loop() {
 ```
 
 ### Что умеет
+- **Любой источник данных:** `setReaders(readX, readY)` для внешнего АЦП (ADS1115) или мультиплексора; кнопка с любой подтяжкой и уровнем `setButtonMode()`.
 - **Сама находит центр** при `begin()` (у каждого джойстика он свой и не равен 512). Заново: `calibrateCenter()`.
 - **Мёртвая зона:** дрожание у центра не мешает (`setDeadzone(8)` %), за ней шкала плавно начинается с нуля.
 - **Значения:** `x()`, `y()` от -100 до +100; крайние положения дают ровно ±100, даже если центр смещён.
@@ -73,6 +74,7 @@ void loop() {
 ```
 
 ### Мүмкіндіктері
+- **Деректердің кез келген көзі:** сыртқы АЦП (ADS1115) немесе мультиплексор үшін `setReaders(readX, readY)`; кез келген тартқышты және деңгейлі түйме `setButtonMode()`.
 - **Орталықты өзі табады** `begin()` кезінде. Қайтадан: `calibrateCenter()`.
 - **Өлі аймақ:** `setDeadzone(8)` %.
 - **Мәндер:** `x()`, `y()` -100-ден +100-ге дейін.
@@ -113,6 +115,7 @@ void loop() {
 ```
 
 ### Features
+- **Any data source:** `setReaders(readX, readY)` for an external ADC (ADS1115) or a multiplexer; a button with any pull and level via `setButtonMode()`.
 - **Finds the center** in `begin()` (it is never exactly 512). Again: `calibrateCenter()`.
 - **Dead zone:** `setDeadzone(8)` %, the scale restarts smoothly from 0 after it.
 - **Values:** `x()`, `y()` from -100 to +100; the extremes give exactly ±100 even with an off-center rest position.

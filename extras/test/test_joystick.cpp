@@ -7,6 +7,7 @@
 static int fails = 0;
 #define CHECK(cond) do { if (!(cond)) { printf("FAIL line %d: %s\n", __LINE__, #cond); fails++; } } while (0)
 static void stick(int x, int y) { g_analog[1] = x; g_analog[2] = y; }
+static void reset() { memset(g_level, 1, sizeof g_level); g_now = 1000; }
 
 int main() {
   // 1) центр у реального джойстика не ровно 512: после калибровки это ноль
@@ -84,6 +85,31 @@ int main() {
   j.setLanguage(AlashJoystick::LANG_RU);
   CHECK(strcmp((const char *)j.directionName(), "Вправо") == 0);
   j.diagnose(*(new Print));
+
+  // ===== Свои функции чтения осей (внешний АЦП, мультиплексор) и режимы кнопки =====
+  {
+    static int16_t px = 2048, py = 2048;
+    struct R { static int16_t rx() { return px; } static int16_t ry() { return py; } };
+    reset(); AlashJoystick j(255, 255); j.setAdcRange(0, 4095); j.setReaders(R::rx, R::ry);
+    CHECK(j.begin() && j.error() == AlashJoystick::ERR_OK);
+    CHECK(j.x() == 0 && j.y() == 0 && j.rawX() == 2048);
+    px = 4095; py = 0; CHECK(j.x() == 100 && j.y() == -100 && j.rawX() == 4095 && j.direction() == AlashJoystick::DIR_DOWN_RIGHT);
+    px = 3072; CHECK(j.x() > 40 && j.x() < 60);
+    j.invertX(); CHECK(j.x() < -40);
+    px = 2048; py = 2048;
+  }
+  {
+    // кнопка к питанию (активный HIGH, подтяжка к земле)
+    reset(); stick(512, 512); AlashJoystick b(0, 1, 3); b.setButtonMode(AlashJoystick::JOY_PULLDOWN, false); b.begin();
+    CHECK(g_mode[3] == INPUT_PULLDOWN && g_level[3] == 0 && !b.isPressed());
+    g_level[3] = 1; for (int i = 0; i < 10; i++) { g_now += 10; b.isPressed(); }
+    CHECK(b.pressed() && b.isPressed());
+    g_level[3] = 0; for (int i = 0; i < 10; i++) { g_now += 10; b.isPressed(); }
+    CHECK(b.clicked() && !b.isPressed());
+    // внешний резистор: просто вход, логика прежняя (активный LOW)
+    reset(); stick(512, 512); AlashJoystick e(0, 1, 3); e.setButtonMode(AlashJoystick::JOY_EXTERNAL); e.begin(); CHECK(g_mode[3] == INPUT);
+    AlashJoystick d(0, 1, 3); stick(512, 512); d.begin(); CHECK(g_mode[3] == INPUT_PULLUP);                                   // по умолчанию подтяжка платы
+  }
 
   if (fails) { printf("FAILED: %d\n", fails); return 1; }
   printf("ALL TESTS PASSED\n");

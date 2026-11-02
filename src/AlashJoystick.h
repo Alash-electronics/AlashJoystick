@@ -18,6 +18,9 @@ class AlashJoystick {
     ERR_NO_SIGNAL       // ось стоит на упоре (0 или максимум): не подключено питание или пин
   };
   enum Language : uint8_t { LANG_RU = 0, LANG_KK = 1, LANG_EN = 2 };
+  // Подтяжка пина кнопки: JOY_PULLUP (внутри платы, по умолчанию), JOY_EXTERNAL (внешний резистор), JOY_PULLDOWN (к земле: только ESP32)
+  enum PinMode : uint8_t { JOY_PULLUP = 0, JOY_EXTERNAL, JOY_PULLDOWN };
+  typedef int16_t (*Reader)();                // своя функция чтения оси: внешний АЦП (ADS1115), мультиплексор и т. п.
 
   // pinX, pinY: аналоговые пины осей (VRx, VRy). pinButton: кнопка SW (-1 = нет).
   AlashJoystick(uint8_t pinX, uint8_t pinY, int8_t pinButton = -1);
@@ -45,6 +48,8 @@ class AlashJoystick {
   // ---- Настройки -----------------------------------------------------------------
   void setDeadzone(uint8_t percent) { _dead = percent > 50 ? 50 : percent; }   // мёртвая зона у центра, % (по умолчанию 8)
   void setAdcRange(int16_t minRaw, int16_t maxRaw) { _adcMin = minRaw; _adcMax = maxRaw; }   // диапазон АЦП платы
+  void setButtonMode(PinMode mode, bool activeLow = true) { _bm = mode; _bLow = activeLow; }   // подтяжка кнопки и уровень нажатой (до begin())
+  void setReaders(Reader readX, Reader readY) { _rx = readX; _ry = readY; }   // оси читаются вашими функциями вместо analogRead (пины X и Y тогда не нужны: передайте 255); setAdcRange() задайте под диапазон функции
   void invertX(bool on = true) { _invX = on; }
   void invertY(bool on = true) { _invY = on; }
   void setSmoothing(uint8_t n) { _smooth = n < 1 ? 1 : n > 16 ? 16 : n; }       // усреднить n замеров (по умолчанию 4)
@@ -58,6 +63,8 @@ class AlashJoystick {
  private:
   uint8_t _px, _py;
   int8_t _pb;
+  PinMode _bm = JOY_PULLUP; bool _bLow = true;
+  Reader _rx = nullptr, _ry = nullptr;
   Error _err = ERR_OK;
   Language _lang = LANG_RU;
   int16_t _adcMin = 0, _adcMax = 1023;
@@ -70,7 +77,7 @@ class AlashJoystick {
   uint32_t _bRawAt = 0;
   bool _fPress = false, _fClick = false;
 
-  int16_t sample(uint8_t pin);
+  int16_t sample(uint8_t pin, Reader reader);
   int8_t scale(int16_t raw, int16_t center, bool invert);
   void pollButton();
 };

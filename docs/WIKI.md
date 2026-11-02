@@ -59,6 +59,8 @@ void loop() {
 | `setAdcRange(min, max)` | Диапазон АЦП (ESP32: 0..4095) |
 | `invertX() / invertY()` | Перевернуть ось |
 | `calibrateCenter()` | Замерить центр заново |
+| `setReaders(readX, readY)` | Свои функции чтения осей: внешний АЦП (ADS1115), мультиплексор |
+| `setButtonMode(mode, activeLow)` | Подтяжка кнопки JOY_PULLUP / JOY_EXTERNAL / JOY_PULLDOWN и уровень нажатой |
 | `diagnose(Serial)` | Самопроверка |
 
 ### Если что-то не работает
@@ -73,6 +75,10 @@ void loop() {
 **Вверх оказался минусом**
 
 Вызовите `joy.invertY()` (или `invertX()`).
+
+**Джойстик на ESP8266 или нужна точность выше**
+
+У ESP8266 один аналоговый вход и он шумный. Подключите джойстик к внешнему АЦП ADS1115 (библиотека AlashADS1115) и передайте свои функции чтения: `joy.setReaders(readX, readY)`, не забудьте `setAdcRange(0, 32767)` под диапазон функции.
 
 ### Чем отличается от других библиотек
 Мы посмотрели Joystick (Arduino-Joystick-Library), AnalogJoystick, GyverJoystick и примеры из курсов:
@@ -143,6 +149,8 @@ void loop() {
 | `setAdcRange(min, max)` | АЦП диапазоны (ESP32: 0..4095) |
 | `invertX() / invertY()` | Осьті аудару |
 | `calibrateCenter()` | Центрді қайта өлшеу |
+| `setReaders(readX, readY)` | Осьтерді оқу үшін өз функциялары |
+| `setButtonMode(mode, activeLow)` | Түйме тартқышы және басылған деңгей |
 | `diagnose(Serial)` | Өзін тексеру |
 
 ### Бірдеңе жұмыс істемесе
@@ -158,11 +166,17 @@ void loop() {
 
 `joy.invertY()` (не `invertX()`) шақырыңыз.
 
+**ESP8266-дағы джойстик немесе жоғары дәлдік керек**
+
+ESP8266-да бір аналогтық кіріс бар және ол шулы. Джойстикті сыртқы ADS1115 АЦП-ына (AlashADS1115 кітапханасы) қосып, өз оқу функцияларыңызды беріңіз: `joy.setReaders(readX, readY)`, функция диапазонына `setAdcRange(0, 32767)` беруді ұмытпаңыз.
+
 ### Өзін-өзі тексеру
 Кітапханада `diagnose(Serial)` бар: тақта не көргенін басып шығарады және нені тексеру керегін айтады. Кеңес тілі: `setLanguage(LANG_RU / LANG_KK / LANG_EN)`.
 
 ### Мысалдар
 `Basic`, `Directions`, `Servo_AVR`, `Diagnose`.
+
+Толық нұсқаулық: [docs/WIKI.md](docs/WIKI.md).
 
 ---
 
@@ -221,6 +235,8 @@ void loop() {
 | `setAdcRange(min, max)` | ADC range (ESP32: 0..4095) |
 | `invertX() / invertY()` | Flip an axis |
 | `calibrateCenter()` | Measure the center again |
+| `setReaders(readX, readY)` | Your own axis read functions: an external ADC (ADS1115), a multiplexer |
+| `setButtonMode(mode, activeLow)` | Button pull JOY_PULLUP / JOY_EXTERNAL / JOY_PULLDOWN and the pressed level |
 | `diagnose(Serial)` | Self-check |
 
 ### If something does not work
@@ -236,11 +252,17 @@ Call `joy.setAdcRange(0, 4095)` before `begin()`. Use ADC1 pins (32-39): ADC2 do
 
 Call `joy.invertY()` (or `invertX()`).
 
+**A joystick on an ESP8266 or you need higher precision**
+
+The ESP8266 has one analog input and it is noisy. Connect the joystick to an external ADS1115 ADC (the AlashADS1115 library) and pass your own read functions: `joy.setReaders(readX, readY)`, and do not forget `setAdcRange(0, 32767)` for the function range.
+
 ### Self-check
 The library has `diagnose(Serial)`: it prints what the board sees and tells what to check. Tips language: `setLanguage(LANG_RU / LANG_KK / LANG_EN)`.
 
 ### Examples
 `Basic`, `Directions`, `Servo_AVR`, `Diagnose`.
+
+Full guide: [docs/WIKI.md](docs/WIKI.md).
 
 ---
 

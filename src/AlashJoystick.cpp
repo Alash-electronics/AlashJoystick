@@ -6,20 +6,26 @@
 AlashJoystick::AlashJoystick(uint8_t pinX, uint8_t pinY, int8_t pinButton) : _px(pinX), _py(pinY), _pb(pinButton) {}
 
 bool AlashJoystick::begin() {
-  if (_pb >= 0) pinMode(_pb, INPUT_PULLUP);
+  if (_pb >= 0) {
+    if (_bm == JOY_PULLUP) pinMode(_pb, INPUT_PULLUP);
+#if defined(INPUT_PULLDOWN)
+    else if (_bm == JOY_PULLDOWN) pinMode(_pb, INPUT_PULLDOWN);
+#endif
+    else pinMode(_pb, INPUT);
+  }
   _started = true;
   _cx = (_adcMin + _adcMax) / 2;           // пока не замерили, центр это середина диапазона
   _cy = _cx;
   if (_pb >= 0) {
-    _bRaw = _bDown = (digitalRead(_pb) == LOW);
+    _bRaw = _bDown = (digitalRead(_pb) == (_bLow ? LOW : HIGH));
     _bRawAt = millis();
   }
   return calibrateCenter();
 }
 
-int16_t AlashJoystick::sample(uint8_t pin) {
+int16_t AlashJoystick::sample(uint8_t pin, Reader reader) {
   int32_t sum = 0;
-  for (uint8_t i = 0; i < _smooth; i++) sum += analogRead(pin);
+  for (uint8_t i = 0; i < _smooth; i++) sum += reader ? reader() : analogRead(pin);
   return (int16_t)(sum / _smooth);
 }
 
@@ -28,7 +34,7 @@ bool AlashJoystick::calibrateCenter() {
   _err = ERR_OK;
   uint8_t keep = _smooth;
   _smooth = 16;                            // для замера центра усредняем сильнее
-  int16_t cx = sample(_px), cy = sample(_py);
+  int16_t cx = sample(_px, _rx), cy = sample(_py, _ry);
   _smooth = keep;
   int16_t range = _adcMax - _adcMin;
   int16_t mid = _adcMin + range / 2;
@@ -59,15 +65,15 @@ int8_t AlashJoystick::scale(int16_t raw, int16_t center, bool invert) {
   return (int8_t)(invert ? -v : v);
 }
 
-int16_t AlashJoystick::rawX() { return sample(_px); }
-int16_t AlashJoystick::rawY() { return sample(_py); }
+int16_t AlashJoystick::rawX() { return sample(_px, _rx); }
+int16_t AlashJoystick::rawY() { return sample(_py, _ry); }
 int8_t AlashJoystick::x() {
   if (!_started) begin();
-  return scale(sample(_px), _cx, _invX);
+  return scale(sample(_px, _rx), _cx, _invX);
 }
 int8_t AlashJoystick::y() {
   if (!_started) begin();
-  return scale(sample(_py), _cy, _invY);   // + при росте значения АЦП; если «вверх» у вас отрицательный, вызовите invertY()
+  return scale(sample(_py, _ry), _cy, _invY);   // + при росте значения АЦП; если «вверх» у вас отрицательный, вызовите invertY()
 }
 
 uint8_t AlashJoystick::magnitude() {
@@ -110,7 +116,7 @@ const __FlashStringHelper *AlashJoystick::directionName() {
 void AlashJoystick::pollButton() {
   if (_pb < 0) return;
   uint32_t now = millis();
-  bool raw = (digitalRead(_pb) == LOW);
+  bool raw = (digitalRead(_pb) == (_bLow ? LOW : HIGH));
   if (raw != _bRaw) {
     _bRaw = raw;
     _bRawAt = now;
