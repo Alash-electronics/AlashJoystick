@@ -1,6 +1,12 @@
-// AlashJoystick: джойстик управляет двумя сервоприводами (например, поворот камеры).
-// Сервоприводы на пины 9 и 10.
-// Скетч для плат Arduino AVR (Uno / Nano / Mega) со стандартной библиотекой Servo.
+// [ru] AlashJoystick: джойстик управляет двумя сервоприводами (например, поворот камеры).
+//      Сервоприводы на пины 9 и 10.
+//      Скетч для плат Arduino AVR (Uno / Nano / Mega) со стандартной библиотекой Servo.
+// [kk] AlashJoystick: джойстик екі сервоқозғалтқышты басқарады (мысалы, камераны бұру).
+//      Серволар 9 және 10 пиндерде.
+//      Стандартты Servo кітапханасы бар Arduino AVR тақталарына (Uno / Nano / Mega) арналған скетч.
+// [en] AlashJoystick: the joystick controls two servos (for example a camera pan-tilt).
+//      The servos on pins 9 and 10.
+//      A sketch for Arduino AVR boards (Uno / Nano / Mega) with the standard Servo library.
 #include <AlashJoystick.h>
 #include <Servo.h>
 

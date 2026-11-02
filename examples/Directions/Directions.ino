@@ -1,6 +1,12 @@
-// AlashJoystick: восемь направлений и угол. Название направления печатается на русском
-// (setLanguage меняет язык). В центре печатать не надо.
-// Пины: Uno / Nano  VRx=A0, VRy=A1, SW=D2;  ESP32  VRx=GPIO34, VRy=GPIO35, SW=GPIO27 (аналоговые пины ADC1).
+// [ru] AlashJoystick: восемь направлений и угол. Название направления печатается на русском
+//      (setLanguage меняет язык). В центре печатать не надо.
+//      Пины: Uno / Nano  VRx=A0, VRy=A1, SW=D2;  ESP32  VRx=GPIO34, VRy=GPIO35, SW=GPIO27 (аналоговые пины ADC1).
+// [kk] AlashJoystick: сегіз бағыт және бұрыш. Бағыт атауы орысша басылады
+//      (setLanguage тілді өзгертеді). Орталықта басып шығарудың қажеті жоқ.
+//      Пиндер: Uno / Nano  VRx=A0, VRy=A1, SW=D2;  ESP32  VRx=GPIO34, VRy=GPIO35, SW=GPIO27 (ADC1 аналогтық пиндері).
+// [en] AlashJoystick: eight directions and the angle. The direction name is printed in Russian
+//      (setLanguage changes the language). Nothing needs to be printed at the center.
+//      Pins: Uno / Nano  VRx=A0, VRy=A1, SW=D2;  ESP32  VRx=GPIO34, VRy=GPIO35, SW=GPIO27 (ADC1 analog pins).
 #if defined(ESP32)
 const uint8_t PIN_X = 34, PIN_Y = 35, PIN_SW = 27;
 #elif defined(ESP8266)

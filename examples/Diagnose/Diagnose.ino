@@ -1,5 +1,9 @@
-// AlashJoystick: джойстик ведёт себя странно? Скетч покажет сырые значения, центр и подскажет настройки.
-// Пины: Uno / Nano  VRx=A0, VRy=A1, SW=D2;  ESP32  VRx=GPIO34, VRy=GPIO35, SW=GPIO27 (аналоговые пины ADC1).
+// [ru] AlashJoystick: джойстик ведёт себя странно? Скетч покажет сырые значения, центр и подскажет настройки.
+//      Пины: Uno / Nano  VRx=A0, VRy=A1, SW=D2;  ESP32  VRx=GPIO34, VRy=GPIO35, SW=GPIO27 (аналоговые пины ADC1).
+// [kk] AlashJoystick: джойстик біртүрлі жұмыс істей ме? Скетч шикі мәндерді, орталықты көрсетеді және баптауларды ұсынады.
+//      Пиндер: Uno / Nano  VRx=A0, VRy=A1, SW=D2;  ESP32  VRx=GPIO34, VRy=GPIO35, SW=GPIO27 (ADC1 аналогтық пиндері).
+// [en] AlashJoystick: the joystick behaves strangely? The sketch shows the raw values, the center and suggests settings.
+//      Pins: Uno / Nano  VRx=A0, VRy=A1, SW=D2;  ESP32  VRx=GPIO34, VRy=GPIO35, SW=GPIO27 (ADC1 analog pins).
 #if defined(ESP32)
 const uint8_t PIN_X = 34, PIN_Y = 35, PIN_SW = 27;
 #elif defined(ESP8266)
